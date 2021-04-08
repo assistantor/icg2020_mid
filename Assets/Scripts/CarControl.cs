@@ -44,11 +44,23 @@ public class CarControl
         m_SelectCar.Back();
         m_GasPedal.Press();
     }
+
+    public void GasPedalReset()
+    {
+        m_GasPedal.ResetColor();
+    }
+
     public void Break()
     {
         m_SelectCar.Break();
         m_Breaker.Press();
     }
+
+    public void BreakerReset()
+    {
+        m_Breaker.ResetColor();
+    }
+
     public void Turn(string direction)
     {
         m_SelectCar.Turn(direction);

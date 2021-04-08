@@ -21,16 +21,39 @@ public class CarGames : MonoBehaviour
         {
             // Break
             m_Game.Break();
-        }else if (Input.GetKey(KeyCode.UpArrow))
-        {
-            // Speed up
-            m_Game.SpeedUp();
-        } 
-
-        if (Input.GetKey(KeyCode.B))
+        }
+        else if (Input.GetKey(KeyCode.B))
         {
             //Back
             m_Game.Back();
+            // reset Breaker
+            m_Game.BreakerReset();
+        }
+        else if (Input.GetKey(KeyCode.UpArrow))
+        {
+            // Speed up
+            m_Game.SpeedUp();
+            // reset Breaker
+            m_Game.BreakerReset();
+        }
+        else
+        {
+            // reset GasPedalReset
+            m_Game.GasPedalReset();
+            // reset Breaker
+            m_Game.BreakerReset();
+        }
+
+        if (Input.GetKeyUp(KeyCode.UpArrow) || Input.GetKeyUp(KeyCode.B))
+        {
+            // reset breaker
+            m_Game.GasPedalReset();
+        }
+
+        if (Input.GetKeyUp(KeyCode.DownArrow))
+        {
+            //Back
+            m_Game.BreakerReset();
         }
 
         if (Input.GetKey(KeyCode.LeftArrow))

@@ -14,9 +14,9 @@ public class TracingCameraEntity : MonoBehaviour
     float m_Deformation;
     float m_DeformationA;
 
-    public Vector2 fixWheelSteering;
-    public Vector2 fixGasPedal;
-    public Vector2 fixBreaker;
+    public Vector3 fixWheelSteering;
+    public Vector3 fixGasPedal;
+    public Vector3 fixBreaker;
 
     public float MOVING_THRESHOLD = 10f;
 
@@ -37,7 +37,7 @@ public class TracingCameraEntity : MonoBehaviour
         Vector2 deltaPos = targetObject.transform.position - this.transform.position;
         Vector2 position = deltaPos * 1f * Time.deltaTime;
 
-        this.transform.position += new Vector3(position.x, position.y, 0);
+        this.transform.position += new Vector3(position.x, position.y,0);
     }
 
     public void CameraChange(CarEntity car)
@@ -92,8 +92,5 @@ public class TracingCameraEntity : MonoBehaviour
     void CameraSize()
     {
         m_Camera.orthographicSize = m_OrthographicSize + Mathf.Max(0, Mathf.Abs(targetObject.Velocity)) * 0.4f;
-        
-        // GasPedal.transform.localScale = new Vector3 (1+m_DeformationA, 1+m_DeformationA, 0);
-        // Breaker.transform.localScale = new Vector3 (1+m_DeformationA, 1+m_DeformationA, 0);
     }
 }

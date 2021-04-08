@@ -7,7 +7,8 @@ public class OperatorEntity : MonoBehaviour
     SpriteRenderer m_TargerRenderer;
     float m_WheelSteeringAngle = 0;
     const float WHEEL_LIMIT = 180f;
-    public float turnAngularVelocity = 150f;
+    const float turnAngularVelocity = 275f;
+    float m_storageVelocity;
 
     void Start()
     {
@@ -17,10 +18,9 @@ public class OperatorEntity : MonoBehaviour
     public void Press()
     {
         m_TargerRenderer.color = Color.white;
-        this.Invoke("ResetColor", 1f);
     }
 
-    void ResetColor()
+    public void ResetColor()
     {
         m_TargerRenderer.color = Color.gray;
     }
@@ -30,16 +30,16 @@ public class OperatorEntity : MonoBehaviour
         switch (direction)
         {
             case "left":
-                m_WheelSteeringAngle = 
-                    m_WheelSteeringAngle + Time.deltaTime * turnAngularVelocity;
-
+                m_storageVelocity = m_WheelSteeringAngle + Time.fixedDeltaTime * turnAngularVelocity;
+                m_WheelSteeringAngle = Mathf.Clamp(
+                    m_storageVelocity, -540, 540);
 
                 UpdateRotation();
-
                 break;
             case "right":
-                m_WheelSteeringAngle = 
-                    m_WheelSteeringAngle - Time.deltaTime * turnAngularVelocity;
+                m_storageVelocity = m_WheelSteeringAngle - Time.fixedDeltaTime * turnAngularVelocity;
+                m_WheelSteeringAngle = Mathf.Clamp(
+                    m_storageVelocity, -540, 540);
 
                 UpdateRotation();
                 break;
