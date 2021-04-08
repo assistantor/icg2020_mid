@@ -51,7 +51,7 @@ public class CarEntity : MonoBehaviour
     }
     public void Back()
     {
-        m_Velocity = Mathf.Max(-4, m_Velocity - Time.deltaTime * deceleration);
+        m_Velocity = Mathf.Max(-2, m_Velocity - Time.deltaTime * deceleration);
 
         m_DeltaMovement = m_Velocity * Time.fixedDeltaTime;
     }
@@ -94,6 +94,10 @@ public class CarEntity : MonoBehaviour
     {
         ChangeColor(Color.white);     
     }
+    public void CarResetColor()
+    {
+        ResetColor();
+    }
     void ChangeColor (Color color)
     {
         foreach (SpriteRenderer r in m_Renderders)
@@ -101,6 +105,12 @@ public class CarEntity : MonoBehaviour
             r.color = color;
         }
     }
+
+    public void CarChangeColor (Color color)
+    {
+        ChangeColor(color);
+    }
+
     void  OnCollisionEnter2D(Collision2D collision)
     {
         ChangeColor(Color.red);

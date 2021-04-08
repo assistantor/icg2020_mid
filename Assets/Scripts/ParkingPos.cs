@@ -4,20 +4,34 @@ using UnityEngine;
 
 public class ParkingPos : MonoBehaviour
 {
-    public GameObject center;
-    bool check = true;
-    
+    CarEntity m_car;
+    [SerializeField] GameObject center;
+    [SerializeField] GameObject line1;
+    [SerializeField] GameObject line2;
+    [SerializeField] GameObject line3;
+    [SerializeField] GameObject line4;
+
     void OnTriggerStay2D(Collider2D other)
     {
-        if (center.GetComponent<CheckLine>().IsPassing && check)
+        m_car = other.gameObject.GetComponent<CarEntity>();
+        if (m_car != null)
         {
-            Debug.Log("nice job.");
-            check = false;
+            if (center.GetComponent<CheckLine>().IsPassing &&
+            !(line1.GetComponent<CheckLine>().IsPassing) &&
+            !(line2.GetComponent<CheckLine>().IsPassing) &&
+            !(line3.GetComponent<CheckLine>().IsPassing) &&
+            !(line4.GetComponent<CheckLine>().IsPassing))
+            {
+                Debug.Log("nice job.");
+                m_car.CarChangeColor(Color.green);
+            }
+            else
+            {
+                Debug.Log("you're out");
+                m_car.CarResetColor();
+            }
         }
     }
-    void OnTriggerExit2D(Collider2D other)
-    {
-        Debug.Log("you're out");
-        check = true;
-    }
+
 }
+    

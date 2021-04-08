@@ -5,15 +5,28 @@ using UnityEngine;
 public class TracingCameraEntity : MonoBehaviour
 {
     public CarEntity targetObject;
+    [SerializeField] OperatorEntity WheelSteering;
+    [SerializeField] OperatorEntity Breaker;
+    [SerializeField] OperatorEntity GasPedal;
 
     Camera m_Camera;
     float m_OrthographicSize;
+    float m_Deformation;
+    float m_DeformationA;
+
+    public Vector2 fixWheelSteering;
+    public Vector2 fixGasPedal;
+    public Vector2 fixBreaker;
 
     public float MOVING_THRESHOLD = 10f;
 
     // Start is called before the first frame update
     void Start()
     {
+        fixWheelSteering = WheelSteering.transform.position - this.transform.position;
+        fixBreaker = Breaker.transform.position - this.transform.position;
+        fixGasPedal = GasPedal.transform.position - this.transform.position;
+
         m_Camera = this.GetComponent<Camera>();
         m_OrthographicSize = m_Camera.orthographicSize;
     }
@@ -21,8 +34,8 @@ public class TracingCameraEntity : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 deltaPos = targetObject.transform.position - this.transform.position;
-        Vector3 position = deltaPos * 1f * Time.deltaTime;
+        Vector2 deltaPos = targetObject.transform.position - this.transform.position;
+        Vector2 position = deltaPos * 1f * Time.deltaTime;
 
         this.transform.position += new Vector3(position.x, position.y, 0);
     }
@@ -30,11 +43,10 @@ public class TracingCameraEntity : MonoBehaviour
     public void CameraChange(CarEntity car)
     {
         targetObject = car;
-
     }
 
     private void LateUpdate()
-    {
+    {   
         Vector2 deltaPos = this.transform.position - targetObject.transform.position;
         // Vector3 can trans into Vector2 directly.
         // Calculate the distance reversely.
@@ -59,10 +71,29 @@ public class TracingCameraEntity : MonoBehaviour
         }
         */
 
+        m_Deformation = m_Camera.orthographicSize / m_OrthographicSize;
+        m_DeformationA = Mathf.Max(0, m_Deformation-1);
+
+        WheelSteering.transform.localScale = new Vector3 (1+m_DeformationA, 1+m_DeformationA, 0);
+        WheelSteering.transform.position = 
+            new Vector2(this.transform.position.x, this.transform.position.y) + new Vector2 (fixWheelSteering.x, fixWheelSteering.y)*m_Deformation;
+        
+        Breaker.transform.localScale = new Vector3 (1+m_DeformationA, 1+m_DeformationA, 0);
+        Breaker.transform.position = 
+            new Vector2(this.transform.position.x, this.transform.position.y) + new Vector2 (fixBreaker.x, fixBreaker.y)*m_Deformation;
+
+        GasPedal.transform.localScale = new Vector3 (1+m_DeformationA, 1+m_DeformationA, 0);
+        GasPedal.transform.position = 
+            new Vector2(this.transform.position.x, this.transform.position.y) + new Vector2 (fixGasPedal.x, fixGasPedal.y)*m_Deformation;
+
         Invoke("CameraSize", 0.5f);
     }
+
     void CameraSize()
     {
-        m_Camera.orthographicSize = m_OrthographicSize + Mathf.Max(0, targetObject.Velocity) * 0.4f;
+        m_Camera.orthographicSize = m_OrthographicSize + Mathf.Max(0, Mathf.Abs(targetObject.Velocity)) * 0.4f;
+        
+        // GasPedal.transform.localScale = new Vector3 (1+m_DeformationA, 1+m_DeformationA, 0);
+        // Breaker.transform.localScale = new Vector3 (1+m_DeformationA, 1+m_DeformationA, 0);
     }
 }
