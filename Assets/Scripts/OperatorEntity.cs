@@ -6,40 +6,43 @@ public class OperatorEntity : MonoBehaviour
 {
     SpriteRenderer m_TargerRenderer;
     float m_WheelSteeringAngle = 0;
-    const float WHEEL_LIMIT = 180f;
-    const float turnAngularVelocity = 275f;
-    float m_storageVelocity;
-
     void Start()
     {
         m_TargerRenderer = this.GetComponent<SpriteRenderer>();
     }
 
+    public Vector4 GetColor { get{ return m_TargerRenderer.color; } }
+
     public void Press()
     {
-        m_TargerRenderer.color = Color.white;
+        m_TargerRenderer.color = new Vector4 (1,1,1,GetColor.w);
     }
 
     public void ResetColor()
     {
-        m_TargerRenderer.color = Color.gray;
+        m_TargerRenderer.color = new Vector4(0.5f, 0.5f, 0.5f, GetColor.w);
     }
-    
-    public void Rotation(string direction)
+
+    public void Invisible()
+    {
+        m_TargerRenderer.color = new Vector4(GetColor.x, GetColor.y, GetColor.z, 0f);
+    }
+    public void Visible()
+    {
+        m_TargerRenderer.color = new Vector4(GetColor.x, GetColor.y, GetColor.z, 1f);
+    }
+
+    public void Rotation(string direction, CarEntity targetCar)
     {
         switch (direction)
         {
             case "left":
-                m_storageVelocity = m_WheelSteeringAngle + Time.fixedDeltaTime * turnAngularVelocity;
-                m_WheelSteeringAngle = Mathf.Clamp(
-                    m_storageVelocity, -540, 540);
+                m_WheelSteeringAngle = targetCar.FrontWheelAngle / targetCar.AngleLimit * 540;
 
                 UpdateRotation();
                 break;
             case "right":
-                m_storageVelocity = m_WheelSteeringAngle - Time.fixedDeltaTime * turnAngularVelocity;
-                m_WheelSteeringAngle = Mathf.Clamp(
-                    m_storageVelocity, -540, 540);
+                m_WheelSteeringAngle = targetCar.FrontWheelAngle / targetCar.AngleLimit * 540;
 
                 UpdateRotation();
                 break;
@@ -48,6 +51,12 @@ public class OperatorEntity : MonoBehaviour
                 break;
         }
     }
+    public void WheelSteeringAngleSwitchCorrecter(CarEntity targetCar)
+    {
+        m_WheelSteeringAngle = targetCar.FrontWheelAngle / targetCar.AngleLimit * 540;
+        UpdateRotation();
+    }
+
     public void UpdateRotation()
     {
         Vector3 localEulerAngles = new Vector3(0f, 0f, m_WheelSteeringAngle);

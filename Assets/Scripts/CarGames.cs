@@ -17,6 +17,8 @@ public class CarGames : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        m_Game.Decay();
+
         if (Input.GetKey(KeyCode.DownArrow))
         {
             // Break
@@ -24,17 +26,27 @@ public class CarGames : MonoBehaviour
         }
         else if (Input.GetKey(KeyCode.B))
         {
-            //Back
-            m_Game.Back();
             // reset Breaker
             m_Game.BreakerReset();
+            //Back
+            m_Game.Back();
         }
         else if (Input.GetKey(KeyCode.UpArrow))
         {
-            // Speed up
-            m_Game.SpeedUp();
-            // reset Breaker
-            m_Game.BreakerReset();
+            if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.LeftArrow))
+            {
+                m_Game.Drifting("left");
+            }else if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.RightArrow))
+            {
+                m_Game.Drifting("right");
+            }
+            else
+            {
+                // reset Breaker
+                m_Game.BreakerReset();
+                // Speed up
+                m_Game.SpeedUp();
+            }
         }
         else
         {
@@ -74,7 +86,11 @@ public class CarGames : MonoBehaviour
         // Update car transform
         m_Game.UpdatePosition();
         
-        
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            m_Game.DriveAssistance();
+        }
 
+        
     }
 }

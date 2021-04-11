@@ -69,6 +69,7 @@
     <Compile Include="Assets\Scripts\CarGames.cs" />
     <Compile Include="Assets\Scripts\CheckLine.cs" />
     <Compile Include="Assets\Scripts\CheckPoint.cs" />
+    <Compile Include="Assets\Scripts\DriveAssist.cs" />
     <Compile Include="Assets\Scripts\ObstacleEntity.cs" />
     <Compile Include="Assets\Scripts\OperatorEntity.cs" />
     <Compile Include="Assets\Scripts\ParkingPos.cs" />

@@ -19,6 +19,7 @@ public class TracingCameraEntity : MonoBehaviour
     public Vector3 fixBreaker;
 
     public float MOVING_THRESHOLD = 10f;
+    bool driveAssistance = false;
 
     // Start is called before the first frame update
     void Start()
@@ -86,11 +87,36 @@ public class TracingCameraEntity : MonoBehaviour
         GasPedal.transform.position = 
             new Vector2(this.transform.position.x, this.transform.position.y) + new Vector2 (fixGasPedal.x, fixGasPedal.y)*m_Deformation;
 
+        if (driveAssistance)
+        {
+            Invoke("DriveAssistanceMode", 0f);
+            return;
+        }
         Invoke("CameraSize", 0.5f);
     }
 
     void CameraSize()
     {
         m_Camera.orthographicSize = m_OrthographicSize + Mathf.Max(0, Mathf.Abs(targetObject.Velocity)) * 0.4f;
+    }
+
+    public void DriveAssistanceOn()
+    {
+        driveAssistance = true;
+        WheelSteering.Invisible();
+        Breaker.Invisible();
+        GasPedal.Invisible();
+    }
+    public void DriveAssistanceOff()
+    {
+        driveAssistance = false;
+        WheelSteering.Visible();
+        Breaker.Visible();
+        GasPedal.Visible();
+        CameraSize();
+    }
+    void DriveAssistanceMode()
+    {
+        m_Camera.orthographicSize = 5f;
     }
 }
