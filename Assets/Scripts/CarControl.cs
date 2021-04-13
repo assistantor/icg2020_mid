@@ -18,7 +18,7 @@ public class CarControl
     public OperatorEntity m_GasPedal;
 
     DriveAssist m_DriveAssist = new DriveAssist();
-    bool assistControl = false;
+    bool isAssist = false;
 
     public void SetGame()
     {
@@ -71,9 +71,15 @@ public class CarControl
     public void Turn(string direction)
     {
         m_SelectCar.Turn(direction);
-        m_WheelSteering.Rotation(direction, m_SelectCar);
+        m_WheelSteering.Rotation(m_SelectCar);
         m_DriveAssist.Turn(m_SelectCar);
+    }
 
+    public void TurnReset()
+    {
+        m_SelectCar.TurnReset();
+        m_WheelSteering.Rotation(m_SelectCar);
+        m_DriveAssist.Turn(m_SelectCar);
     }
 
     public void Drifting(string direction)
@@ -85,7 +91,7 @@ public class CarControl
 
     public void SelectCar()
     {
-        if (assistControl)
+        if (isAssist)
         {
             DriveAssistance();
         }
@@ -101,15 +107,19 @@ public class CarControl
 
     public void DriveAssistance()
     {
-        if (!assistControl)
+        if (!isAssist || !m_SelectCar.IsCameraZoomIn)
         {
-            assistControl = true;
+            isAssist = true;
+            m_SelectCar.CameraZoomInOn();
+            m_SelectCar.DriveAssistOn();
             m_DriveAssist.On(m_SelectCar);
             m_Camera.DriveAssistanceOn();
         }
         else
         {
-            assistControl = false;
+            isAssist = false;
+            m_SelectCar.CameraZoomInOff();
+            m_SelectCar.DriveAssistOff();
             m_DriveAssist.Off(m_SelectCar);
             m_Camera.DriveAssistanceOff();
         }

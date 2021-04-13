@@ -16,7 +16,8 @@ public class ParkingPos : MonoBehaviour
         m_car = other.gameObject.GetComponent<CarEntity>();
         if (m_car != null)
         {
-            Vector4 color = m_car.OriginalColor;
+            Vector4 carColor = m_car.CarColor;
+            Vector4 wheelColor = m_car.WheelColor;
             if (center.GetComponent<CheckLine>().IsPassing &&
             !(line1.GetComponent<CheckLine>().IsPassing) &&
             !(line2.GetComponent<CheckLine>().IsPassing) &&
@@ -24,13 +25,13 @@ public class ParkingPos : MonoBehaviour
             !(line4.GetComponent<CheckLine>().IsPassing))
             {
                 Debug.Log("nice job.");
-                m_car.CarChangeColor(new Color(0,1,0,color.w));
+                m_car.CarChangeColor(new Color(0,1,0,carColor.w), new Color(0, 1, 0, wheelColor.w));
             }
             else
             {
                 Debug.Log("you're out");
-                
-                m_car.CarChangeColor(new Color(color.x, color.y, color.z, color.w));;
+
+                m_car.CarChangeColor(new Color(carColor.x, carColor.y, carColor.z, carColor.w), new Color(wheelColor.x, wheelColor.y, wheelColor.z, wheelColor.w));
             }
         }
     }

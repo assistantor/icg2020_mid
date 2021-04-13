@@ -87,12 +87,21 @@ public class TracingCameraEntity : MonoBehaviour
         GasPedal.transform.position = 
             new Vector2(this.transform.position.x, this.transform.position.y) + new Vector2 (fixGasPedal.x, fixGasPedal.y)*m_Deformation;
 
+        if (!(targetObject.IsCameraZoomIn))
+        {
+            DriveAssistanceOff();
+        }
+
         if (driveAssistance)
         {
             Invoke("DriveAssistanceMode", 0f);
             return;
         }
-        Invoke("CameraSize", 0.5f);
+
+
+        Invoke("CameraSize", 0.3f);
+
+        
     }
 
     void CameraSize()

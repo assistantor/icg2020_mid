@@ -68,7 +68,12 @@ public class CarGames : MonoBehaviour
             m_Game.BreakerReset();
         }
 
-        if (Input.GetKey(KeyCode.LeftArrow))
+        if (Input.GetKey(KeyCode.LeftArrow) && Input.GetKey(KeyCode.RightArrow))
+        {
+            // Turn reset
+            m_Game.TurnReset();
+        }
+        else if (Input.GetKey(KeyCode.LeftArrow))
         {
             // Turn left
             m_Game.Turn("left");

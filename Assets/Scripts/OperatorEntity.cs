@@ -28,24 +28,10 @@ public class OperatorEntity : MonoBehaviour
         m_TargerRenderer.color = new Vector4(GetColor.x, GetColor.y, GetColor.z, 1f);
     }
 
-    public void Rotation(string direction, CarEntity targetCar)
+    public void Rotation(CarEntity targetCar)
     {
-        switch (direction)
-        {
-            case "left":
-                m_WheelSteeringAngle = targetCar.FrontWheelAngle / targetCar.AngleLimit * 540;
-
-                UpdateRotation();
-                break;
-            case "right":
-                m_WheelSteeringAngle = targetCar.FrontWheelAngle / targetCar.AngleLimit * 540;
-
-                UpdateRotation();
-                break;
-            default:
-                Debug.Log("direction error!");
-                break;
-        }
+        m_WheelSteeringAngle = targetCar.FrontWheelAngle / targetCar.AngleLimit * 540;
+        UpdateRotation();
     }
     public void WheelSteeringAngleSwitchCorrecter(CarEntity targetCar)
     {
