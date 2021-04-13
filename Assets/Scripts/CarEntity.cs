@@ -38,6 +38,7 @@ public class CarEntity : MonoBehaviour
     bool cameraZoomIn = false;
 
     public float CarLength { get { return m_CarLength; } }
+
     public float FrontWheelAngle { get { return m_FrontWheelAngle; } }
 
     public float Velocity { get { return m_Velocity; } }
@@ -55,6 +56,7 @@ public class CarEntity : MonoBehaviour
     public Vector4 OriginalWheelColor { get { return originalWheelColor; } }
 
     public bool IsDriveAssistOn { get { return driveAssist; } }
+
     public bool IsCameraZoomIn { get { return cameraZoomIn; } }
 
     public CarEntity(string carName, float carLength = 1, float frontWheelAngle = 0)
