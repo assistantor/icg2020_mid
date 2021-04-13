@@ -4,12 +4,8 @@ using UnityEngine;
 
 public class OperatorEntity : MonoBehaviour
 {
-    SpriteRenderer m_TargerRenderer;
+    [SerializeField] SpriteRenderer m_TargerRenderer;
     float m_WheelSteeringAngle = 0;
-    void Start()
-    {
-        m_TargerRenderer = this.GetComponent<SpriteRenderer>();
-    }
 
     public Vector4 GetColor { get{ return m_TargerRenderer.color; } }
 
