@@ -117,13 +117,13 @@ public class CarControl
         }
 
         m_SelectCar = m_Cars[m_CarSelectIndex];
-        m_WheelSteering.WheelSteeringAngleSwitchCorrecter(m_SelectCar);
+        m_WheelSteering.Rotation(m_SelectCar);
         m_Camera.CameraChange(m_SelectCar);
     }
 
     public void DriveAssistance()
     {
-        if (!isAssist || !m_SelectCar.IsCameraZoomIn)
+        if (!isAssist || !m_SelectCar.IsDriveAssistOn)
         {
             isAssist = true;
             m_SelectCar.CameraZoomInOn();

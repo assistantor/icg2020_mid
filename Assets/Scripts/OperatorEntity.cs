@@ -33,11 +33,6 @@ public class OperatorEntity : MonoBehaviour
         m_WheelSteeringAngle = targetCar.FrontWheelAngle / targetCar.AngleLimit * 540;
         UpdateRotation();
     }
-    public void WheelSteeringAngleSwitchCorrecter(CarEntity targetCar)
-    {
-        m_WheelSteeringAngle = targetCar.FrontWheelAngle / targetCar.AngleLimit * 540;
-        UpdateRotation();
-    }
 
     public void UpdateRotation()
     {

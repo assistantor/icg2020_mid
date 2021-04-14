@@ -87,16 +87,21 @@ public class TracingCameraEntity : MonoBehaviour
         GasPedal.transform.position = 
             new Vector2(this.transform.position.x, this.transform.position.y) + new Vector2 (fixGasPedal.x, fixGasPedal.y)*m_Deformation;
 
-        if (!(m_TargetObject.IsCameraZoomIn))
+        if (!(m_TargetObject.IsDriveAssistOn))
         {
+            // Turn off the function when Select another car.
             DriveAssistanceOff();
         }
 
-        if (m_TargetObject.IsCameraZoomIn || (driveAssistance && m_TargetObject.Velocity < 5))
+        if (m_TargetObject.IsCameraZoomIn || driveAssistance)
         {
-            Invoke("DriveAssistMode", 0f);
-            return;
+            if (m_TargetObject.Velocity < 5)
+            {
+                ZoomInMode();
+                return;
+            }
         }
+
         Invoke("CameraSize", 0.3f);
     }
 
@@ -120,10 +125,9 @@ public class TracingCameraEntity : MonoBehaviour
     public void DriveAssistanceOff()
     {
         driveAssistance = false;
-        CameraZoomOut();
         CameraSize();
     }
-    public void DriveAssistMode()
+    public void ZoomInMode()
     {
         m_Camera.orthographicSize = 5.5f;
         WheelSteering.Invisible();

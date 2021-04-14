@@ -311,6 +311,7 @@ public class CarEntity : MonoBehaviour
         CheckPoint checkPoint = other.gameObject.GetComponent<CheckPoint>();
         if (checkPoint != null)
         {
+            Debug.Log("nice");
             ChangeColor(new Color(0, 1, 0, CarColor.w));
             this.Invoke("ResetColor", 0.2f);
         }

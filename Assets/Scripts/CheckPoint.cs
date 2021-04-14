@@ -6,6 +6,10 @@ public class CheckPoint : MonoBehaviour
 {
     void OnTriggerEnter2D(Collider2D other)
     {
-        GameObject.Destroy(this.gameObject);
+        CarEntity car = other.gameObject.GetComponent<CarEntity>();
+        if (car != null)
+        {
+            GameObject.Destroy(this.gameObject);
+        }
     }
 }
