@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TracingCameraEntity : MonoBehaviour
 {
-    public CarEntity targetObject;
+    public CarEntity m_TargetObject;
     [SerializeField] OperatorEntity WheelSteering;
     [SerializeField] OperatorEntity Breaker;
     [SerializeField] OperatorEntity GasPedal;
@@ -35,7 +35,7 @@ public class TracingCameraEntity : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector2 deltaPos = targetObject.transform.position - this.transform.position;
+        Vector2 deltaPos = m_TargetObject.transform.position - this.transform.position;
         Vector2 position = deltaPos * 1f * Time.deltaTime;
 
         this.transform.position += new Vector3(position.x, position.y,0);
@@ -43,12 +43,12 @@ public class TracingCameraEntity : MonoBehaviour
 
     public void CameraChange(CarEntity car)
     {
-        targetObject = car;
+        m_TargetObject = car;
     }
 
     private void LateUpdate()
     {   
-        Vector2 deltaPos = this.transform.position - targetObject.transform.position;
+        Vector2 deltaPos = this.transform.position - m_TargetObject.transform.position;
         // Vector3 can trans into Vector2 directly.
         // Calculate the distance reversely.
         if(deltaPos.magnitude > MOVING_THRESHOLD)
@@ -87,45 +87,55 @@ public class TracingCameraEntity : MonoBehaviour
         GasPedal.transform.position = 
             new Vector2(this.transform.position.x, this.transform.position.y) + new Vector2 (fixGasPedal.x, fixGasPedal.y)*m_Deformation;
 
-        if (!(targetObject.IsCameraZoomIn))
+        if (!(m_TargetObject.IsCameraZoomIn))
         {
             DriveAssistanceOff();
         }
 
-        if (driveAssistance)
+        if (m_TargetObject.IsCameraZoomIn || (driveAssistance && m_TargetObject.Velocity < 5))
         {
-            Invoke("DriveAssistanceMode", 0f);
+            Invoke("DriveAssistMode", 0f);
             return;
         }
-
-
         Invoke("CameraSize", 0.3f);
-
-        
     }
 
     void CameraSize()
     {
-        m_Camera.orthographicSize = m_OrthographicSize + Mathf.Max(0, Mathf.Abs(targetObject.Velocity)) * 0.4f;
+        m_Camera.orthographicSize = m_OrthographicSize + Mathf.Max(0, Mathf.Abs(m_TargetObject.Velocity)) * 0.35f;
+        WheelSteering.Visible();
+        Breaker.Visible();
+        GasPedal.Visible();
     }
 
     public void DriveAssistanceOn()
     {
+        if(m_TargetObject.Velocity < 5)
+        {
+            this.transform.position = new Vector3(m_TargetObject.transform.position.x, m_TargetObject.transform.position.y, this.transform.position.z);
+        }
         driveAssistance = true;
-        WheelSteering.Invisible();
-        Breaker.Invisible();
-        GasPedal.Invisible();
+        CameraZoomIn();
     }
     public void DriveAssistanceOff()
     {
         driveAssistance = false;
-        WheelSteering.Visible();
-        Breaker.Visible();
-        GasPedal.Visible();
+        CameraZoomOut();
         CameraSize();
     }
-    void DriveAssistanceMode()
+    public void DriveAssistMode()
     {
-        m_Camera.orthographicSize = 5f;
+        m_Camera.orthographicSize = 5.5f;
+        WheelSteering.Invisible();
+        Breaker.Invisible();
+        GasPedal.Invisible();
+    }
+    public void CameraZoomIn()
+    {
+        m_TargetObject.CameraZoomInOn();
+    }
+    public void CameraZoomOut()
+    {
+        m_TargetObject.CameraZoomInOff();
     }
 }

@@ -17,7 +17,6 @@ public class CarGames : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        m_Game.Decay();
 
         if (Input.GetKey(KeyCode.DownArrow))
         {
@@ -68,7 +67,7 @@ public class CarGames : MonoBehaviour
             m_Game.BreakerReset();
         }
 
-        if ((Input.GetKey(KeyCode.X) && (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow))) || (Input.GetKey(KeyCode.LeftArrow) && Input.GetKey(KeyCode.RightArrow)))
+        if (Input.GetKey(KeyCode.X) || (Input.GetKey(KeyCode.LeftArrow) && Input.GetKey(KeyCode.RightArrow)))
         {
             // Turn reset
             m_Game.TurnReset();

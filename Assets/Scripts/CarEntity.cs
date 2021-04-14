@@ -15,16 +15,16 @@ public class CarEntity : MonoBehaviour
     Vector4 originalCarColor;
     Vector4 originalWheelColor;
 
-    public float m_CarLength = 1;
-    public float m_CarWidth = 1;
-    float m_FrontWheelAngle = 0;
+    public float m_CarLength = 1f;
+    public float m_CarWidth = 1f;
+    float m_FrontWheelAngle = 0f;
     string m_CarName;
     const float WHEEL_ANGLE_LIMIT = 30f;
     public float turnAngularVelocity = 20f;
     float m_TurnAngle;
 
-    float m_Velocity;
-    float m_SideVelocity;
+    float m_Velocity = 0f;
+    float m_SideVelocity = 0f;
 
     float m_DeltaMovement;
     float m_SideDeltaMovement;
@@ -59,7 +59,7 @@ public class CarEntity : MonoBehaviour
 
     public bool IsCameraZoomIn { get { return cameraZoomIn; } }
 
-    public CarEntity(string carName, float carLength = 1, float frontWheelAngle = 0)
+    public CarEntity(string carName, float carLength = 1f, float frontWheelAngle = 0f)
     {
         m_CarName = carName;
         m_CarLength = carLength;
@@ -76,32 +76,38 @@ public class CarEntity : MonoBehaviour
     }
     public void Break()
     {
-        m_Velocity = Mathf.Max(0, m_Velocity - Time.deltaTime * deceleration);
+        m_Velocity = Mathf.Max(0f, m_Velocity - Time.deltaTime * deceleration);
     }
     public void Back()
     {
-        m_Velocity = Mathf.Max(-5f, m_Velocity - Time.deltaTime * deceleration);
+        if(!(Velocity > 0f))
+        {
+            m_Velocity = Mathf.Max(-5f, m_Velocity - Time.deltaTime * acceleration);
+        }
+        else
+        {
+            m_Velocity = Mathf.Max(-5f, m_Velocity - Time.deltaTime * deceleration);
+        }
     }
     public void Decay()
     {
-        if(m_Velocity > 0)
+        if(m_Velocity > 0f)
         {
-            m_Velocity = Mathf.Max(0, m_Velocity - decayVelocity * Time.deltaTime);
+            m_Velocity = Mathf.Max(0f, m_Velocity - decayVelocity * Time.deltaTime);
         }
         else
         {
-            m_Velocity = Mathf.Min(0, m_Velocity + decayVelocity * Time.deltaTime);
+            m_Velocity = Mathf.Min(0f, m_Velocity + decayVelocity * Time.deltaTime);
         }
-       
-        if (m_SideVelocity > 0)
+        if (m_SideVelocity > 0f)
         {
-            m_SideVelocity = Mathf.Max(0, m_SideVelocity - 10 * decayVelocity * Time.deltaTime);
+            m_SideVelocity = Mathf.Max(0, m_SideVelocity - (50f * decayVelocity + 2f * m_SideVelocity) * Time.deltaTime);
         }
         else
         {
-            m_SideVelocity = Mathf.Min(0, m_SideVelocity + 10 * decayVelocity * Time.deltaTime);
+            m_SideVelocity = Mathf.Min(0, m_SideVelocity + (50f * decayVelocity - 2f * m_SideVelocity) * Time.deltaTime);
         }
-        m_SideDeltaMovement = m_SideDeltaMovement * Time.fixedDeltaTime;
+        m_SideDeltaMovement = m_SideVelocity * Time.fixedDeltaTime;
         m_DeltaMovement = m_Velocity * Time.fixedDeltaTime;
     }
     public void Drifting(string direction)
@@ -109,16 +115,16 @@ public class CarEntity : MonoBehaviour
         switch (direction)
         {
             case "left":
-                m_SideVelocity = 0.15f * m_Velocity;
+                m_SideVelocity += 0.025f * m_Velocity;
                 break;
             case "right":
-                m_SideVelocity = -0.15f * m_Velocity;
+                m_SideVelocity += -0.025f * m_Velocity;
                 break;
             default:
                 Debug.Log("direction error!");
                 break;
         }
-        m_Velocity = Mathf.Max(0, m_Velocity - Time.deltaTime * 0.5f * deceleration);
+        m_Velocity = Mathf.Max(0f, m_Velocity - Time.deltaTime * 0.5f * deceleration);
         m_DeltaMovement = m_Velocity * Time.fixedDeltaTime;
         m_SideDeltaMovement = m_SideVelocity * Time.fixedDeltaTime;
     }
@@ -152,15 +158,15 @@ public class CarEntity : MonoBehaviour
 
     public void TurnReset()
     {
-        if(FrontWheelAngle > 0)
+        if(FrontWheelAngle > 0f)
         {
             m_FrontWheelAngle = Mathf.Max(
-                m_FrontWheelAngle - Time.fixedDeltaTime * turnAngularVelocity, 0);
+                m_FrontWheelAngle - Time.fixedDeltaTime * turnAngularVelocity, 0f);
         }
         else
         {
             m_FrontWheelAngle = Mathf.Min(
-                m_FrontWheelAngle + Time.fixedDeltaTime * turnAngularVelocity, 0);
+                m_FrontWheelAngle + Time.fixedDeltaTime * turnAngularVelocity, 0f);
         }
         UpdateWheels();
     }
@@ -186,7 +192,7 @@ public class CarEntity : MonoBehaviour
 
     public void UpdatePosition()
     {
-        m_TurnAngle = 1 / CarLength *
+        m_TurnAngle = 1f / CarLength *
                 Mathf.Tan(Mathf.Deg2Rad * FrontWheelAngle) *
                 DeltaMovement *
                 Mathf.Rad2Deg;
@@ -194,14 +200,15 @@ public class CarEntity : MonoBehaviour
         this.transform.Rotate(0f, 0f, m_TurnAngle);
 
         this.transform.Translate(Vector3.up * DeltaMovement + 
-            Vector3.right * m_SideDeltaMovement + 
-            Vector3.right * 0.1f * Velocity * Mathf.Cos(Mathf.Deg2Rad * (90 - Mathf.Abs(FrontWheelAngle))) * m_SideDeltaMovement);
+            Vector3.right * m_SideDeltaMovement);
+        Debug.Log(m_SideVelocity);
+        Decay();
     }
 
     public void ResetColor()
     {
-        ChangeCarColor(new Color(OriginalCarColor.x, OriginalCarColor.y, OriginalCarColor.z, OriginalCarColor.w));
-        ChangeWheelColor(new Color(OriginalWheelColor.x, OriginalWheelColor.y, OriginalWheelColor.z, OriginalWheelColor.w));
+        ChangeCarColor(new Color(OriginalCarColor.x, OriginalCarColor.y, OriginalCarColor.z, CarColor.w));
+        ChangeWheelColor(new Color(OriginalWheelColor.x, OriginalWheelColor.y, OriginalWheelColor.z, WheelColor.w));
     }
 
     void ChangeColor (Color color)
@@ -236,6 +243,7 @@ public class CarEntity : MonoBehaviour
     public void CarChangeColor (Color carColor, Color wheelColor)
     {
         ChangeCarColor(carColor);
+        ChangeWheelColor(wheelColor);
     }
 
     void  OnCollisionEnter2D(Collision2D collision)
@@ -272,20 +280,22 @@ public class CarEntity : MonoBehaviour
     {
         DriveAssist m_DriveAssist = new DriveAssist();
         m_DriveAssist.Off(this);
+        CameraZoomInOn();
         DriveAssistOff();
     }
     void OnCollisionExit2D(Collision2D collision)
     {
-        CameraZoomInOff();
+        Invoke("CameraZoomInOff", 0.1f);
         ResetColor();
+        ResetTranslucent();
     }
     void OnTriggerEnter2D(Collider2D other)
     {
         CheckPoint checkPoint = other.gameObject.GetComponent<CheckPoint>();
         if (checkPoint != null)
         {
-            ChangeColor(Color.green);
-            this.Invoke("ResetColor", 0.1f);
+            ChangeColor(new Color(0, 1, 0, CarColor.w));
+            this.Invoke("ResetColor", 0.2f);
         }
     }
 }

@@ -32,7 +32,7 @@ public class CarControl
         m_GasPedal = GameObject.Find("gaspedal").GetComponent<OperatorEntity>();
 
         m_Camera = GameObject.Find("Main Camera").GetComponent<TracingCameraEntity>();
-        m_Camera.targetObject = Car1;
+        m_Camera.m_TargetObject = Car1;
 
         //找到hierarchy中的車子放入List & 鏡頭功能並鎖定車一
 
@@ -124,15 +124,6 @@ public class CarControl
             m_Camera.DriveAssistanceOff();
         }
     }
-
-    public void Decay()
-    {
-        foreach (CarEntity car in m_Cars)
-        {
-            car.Decay();
-        }
-    }
-
     public void UpdatePosition()
     {
         foreach(CarEntity car in m_Cars)
