@@ -26,8 +26,6 @@ public class CheckLine : MonoBehaviour
             PassingLine();
         }
     }
-
-    
     public void PassingLine()
     {
         isPassing = true;

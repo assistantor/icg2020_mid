@@ -34,9 +34,11 @@ public class CarGames : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.LeftArrow))
             {
+                m_Game.GasPedalReset();
                 m_Game.Drifting("left");
             }else if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.RightArrow))
             {
+                m_Game.GasPedalReset();
                 m_Game.Drifting("right");
             }
             else
@@ -45,6 +47,10 @@ public class CarGames : MonoBehaviour
                 m_Game.BreakerReset();
                 // Speed up
                 m_Game.SpeedUp();
+            }
+            if (!(Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)))
+            {
+                m_Game.AutoTurnReset();
             }
         }
         else

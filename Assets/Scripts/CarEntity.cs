@@ -171,6 +171,21 @@ public class CarEntity : MonoBehaviour
         UpdateWheels();
     }
 
+    public void AutoTurnReset()
+    {
+        if (FrontWheelAngle > 0f)
+        {
+            m_FrontWheelAngle = Mathf.Max(
+                m_FrontWheelAngle - Time.fixedDeltaTime * 0.3f * turnAngularVelocity, 0f);
+        }
+        else
+        {
+            m_FrontWheelAngle = Mathf.Min(
+                m_FrontWheelAngle + Time.fixedDeltaTime * 0.3f * turnAngularVelocity, 0f);
+        }
+        UpdateWheels();
+    }
+
     public void UpdateWheels()
     {
         // Update wheels by m_FrontWheelAngle
@@ -201,7 +216,6 @@ public class CarEntity : MonoBehaviour
 
         this.transform.Translate(Vector3.up * DeltaMovement + 
             Vector3.right * m_SideDeltaMovement);
-        Debug.Log(m_SideVelocity);
         Decay();
     }
 
@@ -232,12 +246,14 @@ public class CarEntity : MonoBehaviour
 
     public void ResetTranslucent()
     {
-        ChangeColor(new Color(this.CarColor.x, this.CarColor.y, this.CarColor.z, 1));
+        ChangeCarColor(new Color(this.CarColor.x, this.CarColor.y, this.CarColor.z, 1));
+        ChangeWheelColor(new Color(this.WheelColor.x, this.WheelColor.y, this.WheelColor.z, 1));
     }
 
     public void CarTranslucent()
     {
-        ChangeColor(new Color(this.CarColor.x, this.CarColor.y, this.CarColor.z, 0.7f));
+        ChangeCarColor(new Color(this.CarColor.x, this.CarColor.y, this.CarColor.z, 0.7f));
+        ChangeWheelColor(new Color(this.WheelColor.x, this.WheelColor.y, this.WheelColor.z, 0.7f));
     }
 
     public void CarChangeColor (Color carColor, Color wheelColor)
@@ -248,7 +264,11 @@ public class CarEntity : MonoBehaviour
 
     void  OnCollisionEnter2D(Collision2D collision)
     {
+        DriveAssist m_DriveAssist = new DriveAssist();
         ChangeColor(Color.red);
+        m_DriveAssist.Off(this);
+        CameraZoomInOn();
+        DriveAssistOff();
         Stop();
         Debug.Log("crash!");
     }
@@ -278,14 +298,11 @@ public class CarEntity : MonoBehaviour
 
     void OnCollisionStay2D(Collision2D collision)
     {
-        DriveAssist m_DriveAssist = new DriveAssist();
-        m_DriveAssist.Off(this);
-        CameraZoomInOn();
-        DriveAssistOff();
+        CancelInvoke();
     }
     void OnCollisionExit2D(Collision2D collision)
     {
-        Invoke("CameraZoomInOff", 0.1f);
+        Invoke("CameraZoomInOff", 1f);
         ResetColor();
         ResetTranslucent();
     }

@@ -82,11 +82,27 @@ public class CarControl
         m_DriveAssist.Turn(m_SelectCar);
     }
 
+    public void AutoTurnReset()
+    {
+        foreach(CarEntity car in m_Cars)
+        {
+            if (car.IsDriveAssistOn)
+            {
+                continue;
+            }
+            car.AutoTurnReset();
+            if (car == m_SelectCar)
+            {
+                m_WheelSteering.Rotation(car);
+            }
+            m_DriveAssist.Turn(car);
+        }
+    }
+
     public void Drifting(string direction)
     {
         m_SelectCar.Drifting(direction);
         m_Breaker.Press();
-        m_GasPedal.Press();
     }
 
     public void SelectCar()
